@@ -1,5 +1,13 @@
 # Change Log
 
+## 5.19.0 (2026-03-04)
+
+### Features
+
+- Introduced a new [`flushInstant`][flush] method — an asynchronous version of `flush` that returns `Promise<void>` and can be awaited:
+  - Use `await flushInstant(visitorCode)` to send tracking requests immediately and wait for completion.
+  - Use `await flushInstant()` to send tracking requests immediately for all visitors.
+
 ## 5.18.0 (2026-02-13)
 
 ### Features
@@ -7,8 +15,7 @@
 - Updated the allowed range for the [`trackingInterval`][configurationParameters]. The new range is from **`1000` ms** (default) to **`5000` ms**, allowing a reduction in the number of tracking requests.
 - Introduced a new `track` parameter for [`addData`][addData]. When set to `false`, the data is stored locally and used only for targeting evaluation; it is not sent to the Data API, helping to prevent duplicate data from being recorded. The default value is `true`. This behavior is consistent with the `track` parameter used in evaluation methods such as [`getVariation`][getVariation].
 
-[configurationParameters]: https://developers.kameleoon.com/feature-management-and-experimentation/web-sdks/nodejs-sdk/#configuration-parameters
-[addData]: https://developers.kameleoon.com/feature-management-and-experimentation/web-sdks/nodejs-sdk/#adddata
+[configurationParameters](https://developers.kameleoon.com/feature-management-and-experimentation/web-sdks/nodejs-sdk/#configuration-parameters)
 
 ## 5.17.3 (2026-02-09)
 
