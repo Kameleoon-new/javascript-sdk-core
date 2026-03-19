@@ -1,5 +1,15 @@
 # Change Log
 
+## 5.20.0 (2026-03-19)
+
+### Features
+- Introduced a new [`refreshDataFileIfStale()`][refreshDataFileIfStale] method to refresh the SDK configuration (data file) only when it becomes stale.
+  - **Useful for short-lived runtimes (e.g., edge environments like Cloudflare Workers). Not recommended for typical long-lived Node.js runtimes, where automatic updates are already handled**.
+  - Skips update requests if the configuration is still fresh within the defined [`updateInterval`][configurationParameters].
+  - Returns a boolean indicating whether a refresh request was performed.
+
+[refreshDataFileIfStale]: https://developers.kameleoon.com/feature-management-and-experimentation/web-sdks/nodejs-sdk/#refreshdatafileifstale
+
 ## 5.19.0 (2026-03-04)
 
 ### Features
@@ -14,8 +24,6 @@
 
 - Updated the allowed range for the [`trackingInterval`][configurationParameters]. The new range is from **`1000` ms** (default) to **`5000` ms**, allowing a reduction in the number of tracking requests.
 - Introduced a new `track` parameter for [`addData`][addData]. When set to `false`, the data is stored locally and used only for targeting evaluation; it is not sent to the Data API, helping to prevent duplicate data from being recorded. The default value is `true`. This behavior is consistent with the `track` parameter used in evaluation methods such as [`getVariation`][getVariation].
-
-[configurationParameters](https://developers.kameleoon.com/feature-management-and-experimentation/web-sdks/nodejs-sdk/#configuration-parameters)
 
 ## 5.17.3 (2026-02-09)
 
