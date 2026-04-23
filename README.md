@@ -5,6 +5,6 @@ It's not meant for direct usage.
 
 ## Learn more
 
-- [JavaScript SDK](https://developers.kameleoon.com/feature-management-and-experimentation/web-sdks/js-sdk)
-- [NodeJS SDK](https://developers.kameleoon.com/feature-management-and-experimentation/web-sdks/nodejs-sdk)
-- [React/React Native SDK](https://developers.kameleoon.com/feature-management-and-experimentation/web-sdks/react-js-sdk)
+- [JavaScript SDK](https://developers.kameleoon.com/javascript-sdk.html)
+- [NodeJS SDK](https://developers.kameleoon.com/nodejs-sdk.html)
+- [React/React Native SDK](https://developers.kameleoon.com/react-js-sdk.html)

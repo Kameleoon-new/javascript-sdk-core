@@ -1,5 +1,16 @@
 # Change Log
 
+## 5.22.0 (2026-04-23)
+
+### Features
+
+- Improved the performance of the [`getDataFile()`](getDataFile) method. It now returns a cached [`DataFile`](DataFile) instance that is refreshed whenever the SDK configuration is updated.
+- The [`getFeatureList`](getFeatureList) method has been deprecated in favor of `getDataFile()`.
+- Added a new `dateModified` property to the [`DataFile`](DataFile) object returned by the [`getDataFile`](getDataFile) method.
+
+[DataFile]: https://developers.kameleoon.com/feature-management-and-experimentation/web-sdks/js-sdk#datefile
+[getFeatureList]: https://developers.kameleoon.com/feature-management-and-experimentation/web-sdks/js-sdk#getfeaturelist
+
 ## 5.21.0 (2026-03-23)
 
 ### Features
@@ -40,9 +51,6 @@
 
 - Updated the allowed range for the [`trackingInterval`][configurationParameters]. The new range is from **`1000` ms** (default) to **`5000` ms**, allowing a reduction in the number of tracking requests.
 - Introduced a new `track` parameter for [`addData`][addData]. When set to `false`, the data is stored locally and used only for targeting evaluation; it is not sent to the Data API, helping to prevent duplicate data from being recorded. The default value is `true`. This behavior is consistent with the `track` parameter used in evaluation methods such as [`getVariation`][getVariation].
-
-[configurationParameters]: https://developers.kameleoon.com/feature-management-and-experimentation/web-sdks/nodejs-sdk/#configuration-parameters
-[addData]: https://developers.kameleoon.com/feature-management-and-experimentation/web-sdks/nodejs-sdk/#adddata
 
 ## 5.17.3 (2026-02-09)
 
