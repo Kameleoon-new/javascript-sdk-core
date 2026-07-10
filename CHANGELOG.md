@@ -1,5 +1,12 @@
 # Change Log
 
+## 5.25.2 (2026-07-10)
+
+### Patch Changes
+
+- Fixed excessive memory growth caused by tracking requests repeatedly failing with `429` errors (e.g. during a prolonged tracking outage) from [Data API](https://developers.kameleoon.com/apis/data-api-rest/all-endpoints/).
+- Reduced the maximum tracking request body size from `10 MB` to `2.5 MB` to lower peak memory usage and avoid oversized requests.
+
 ## 5.25.1 (2026-05-20)
 
 ### Patch Changes
