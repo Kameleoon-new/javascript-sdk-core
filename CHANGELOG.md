@@ -1,5 +1,22 @@
 # Change Log
 
+## 5.26.0 (2026-08-24)
+
+### Features
+
+- Added support for SDK event handlers through the new [`setEventHandler`][setEventHandler] method:
+  - `EventType.DataFileUpdate` notifies when the SDK data file (configuration) is updated with [polling](https://docs.kameleoon.com/developer-docs/feature-experimentation/technical-reference/technical-considerations#polling-default) or [streaming](https://docs.kameleoon.com/developer-docs/feature-experimentation/technical-reference/technical-considerations#streaming-premium-option) modes.
+  - `EventType.HttpRequest` notifies when SDK HTTP requests complete successfully or fail.
+  - HTTP request events include the request type, HTTP status or failure details, and request duration.
+  - Passing `null` to `setEventHandler` clears the handler for the selected event type.
+- The [`onEvent`][onEvent] method and the `EventType.ConfigurationUpdate` event type have been deprecated in favor of `setEventHandler` with the `EventType.DataFileUpdate` event type.
+
+[setEventHandler]: https://developers.kameleoon.com/feature-management-and-experimentation/web-sdks/js-sdk#seteventhandler
+[onEvent]: https://developers.kameleoon.com/feature-management-and-experimentation/web-sdks/js-sdk#onevent
+
+### Patch Changes
+- Targeting conditions of a type unsupported by the SDK are now evaluated as `false` instead of `true`, so visitors are no longer targeted by conditions the SDK cannot evaluate.
+
 ## 5.25.2 (2026-07-10)
 
 ### Patch Changes
