@@ -1,5 +1,11 @@
 # Change Log
 
+## 5.26.1 (2026-09-11)
+
+### Patch Changes
+
+- Reduced the load on the Data API during its outages. After a failed tracking request, the SDK sends only one visitor's data per tracking request until a request succeeds, instead of retrying with a full-size (up to 2.5 MB) request on every tracking interval. Once the Data API is reachable again, the accumulated visitor data is sent in full-size requests as usual.
+
 ## 5.26.0 (2026-08-24)
 
 ### Features
@@ -15,6 +21,7 @@
 [onEvent]: https://developers.kameleoon.com/feature-management-and-experimentation/web-sdks/js-sdk#onevent
 
 ### Patch Changes
+
 - Targeting conditions of a type unsupported by the SDK are now evaluated as `false` instead of `true`, so visitors are no longer targeted by conditions the SDK cannot evaluate.
 
 ## 5.25.2 (2026-07-10)
