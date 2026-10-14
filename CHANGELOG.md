@@ -1,5 +1,37 @@
 # Change Log
 
+## 5.28.0 (2026-10-14)
+
+### Features
+
+- Removed CORS preflight (`OPTIONS`) requests in browsers. The data file request no longer sends the custom `X-Kameleoon-SDK-Type`, `X-Kameleoon-SDK-Version` and `If-Modified-Since` headers, and the tracking request sends `Content-Type: text/plain` instead of `*/*`, so every SDK request is a CORS "simple request". Previously, each data file poll was preceded by an `OPTIONS` request that always reached the Kameleoon origin, adding a full round-trip before the configuration was available.
+  - The data file is still served from the CDN and revalidated through the browser HTTP cache according to the server's `Cache-Control`; the [`dataFileUpdate`][setEventHandler] event is fired only when the data file has actually changed, based on its `Last-Modified` header.
+  - Applies to browser runtimes only. Node.js, React Native and server-side rendering keep the previous headers, where there is no CORS and the conditional request is still needed for `304 Not Modified` responses.
+  - Custom `requester` implementations passed through `externals` need no change.
+- Real-time configuration streaming can now be enabled for server-side SDKs independently of client-side SDKs. The SDK reads the new `configUpdateMode` field of the configuration instead of `realTimeUpdate`: `STREAMING` enables streaming for every SDK, `STREAMING_SERVER_ONLY` only for server-side SDKs (Node.js), and `POLLING` disables it.
+- Custom `eventSource` implementations passed through `externals` receive the new `eventTypes` parameter in `open` (the list of SSE event types to listen to; `eventType` is kept for backward compatibility). Registering `onEvent` for every type in `eventTypes` is required for the fixes below. Update `@kameleoon/nodejs-event-source` and `@kameleoon/react-native-event-source` together with the SDK: older versions keep working but listen to configuration updates only, so the SDK treats routine server-side reconnections as failures (logged as errors, with a short fallback to polling) and cannot catch up on updates published while the stream was down. The new versions require `@kameleoon/nodejs-sdk` 5.29.0 and `@kameleoon/javascript-sdk` 4.27.0 or later respectively.
+
+[setEventHandler]: https://developers.kameleoon.com/feature-management-and-experimentation/web-sdks/js-sdk/#seteventhandler
+
+### Patch Changes
+
+- Fixed the SDK getting stuck without configuration updates when the real-time streaming connection could not be established (for example, when the streaming server answers with an error). The SDK now retries the connection once after 10 seconds and then falls back to polling, with the first poll after one minute (or `dataFileRefreshInterval` if it is shorter); the poll switches back to streaming once it is available again.
+- Fixed configuration updates being missed while the streaming connection was temporarily down: the SDK handles the `connection-open-event` sent by the streaming server on every (re)connection and fetches the configuration only if it is newer than the one it holds.
+- A configuration fetch that fails in streaming mode now switches the SDK to polling until the next successful poll, instead of leaving it without updates until the next streaming event.
+- After a fallback to polling, a `304 Not Modified` poll response now restores streaming too; previously, streaming was restored only when the configuration had changed.
+- Fixed a possible duplicate polling schedule after switching from polling to streaming during the first poll.
+- Fixed `requestTimeout` not covering the response body: a response whose body stopped arriving after the headers could keep a request pending indefinitely. The body is now aborted once `requestTimeout` is reached and the request is handled as failed.
+- Fixed remote data requests ([`getRemoteData`][getRemoteData], [`getRemoteVisitorData`][getRemoteVisitorData]) answered with an error status returning a "body used already" error instead of the error message sent by the server. A configuration request whose last attempt fails with a non-JSON body (for example an HTML error page) is now reported as reaching the retry limit, instead of a generic configuration error.
+- A configuration without any feature flags is now handled as a valid one: it is no longer fetched again on every initialization while still fresh, and when a later fetch fails the SDK keeps using it (falling back to polling in streaming mode) instead of reporting an error.
+- Fixed configuration updates stopping silently in streaming mode when a custom `eventSource` passed through `externals` does not implement the optional `onError` method: without it the SDK cannot detect a dropped connection, so it now keeps polling enabled alongside streaming. Implement `onError` to rely on streaming only; it will become required in the next major version. The event sources provided by Kameleoon already implement it.
+- A data file answered with `200` but an unchanged `Last-Modified` (for example by a proxy that ignores `If-Modified-Since`) is no longer applied again and no longer fires the `dataFileUpdate` event.
+- Every response body is now read exactly once, also when it isn't used (`304`, unchanged `Last-Modified`, successful tracking), in the background so that the result doesn't wait for it. In Node.js an unread body keeps its connection busy, which could exhaust a bounded connection pool, and the request timeout now runs until the body is read.
+- Polling schedules the next poll once the current one has completed (instead of a fixed interval timer), so polls no longer overlap and a failed poll never stops polling.
+- Lowered the log level of the message emitted when the streaming server closes the real-time (SSE) connection from `ERROR` to `INFO`. The streaming server recycles connections periodically and the SDK restores the connection automatically, so this is expected behavior. Connection failures are still logged as `ERROR`.
+
+[getRemoteData]: https://developers.kameleoon.com/feature-management-and-experimentation/web-sdks/js-sdk#getremotedata
+[getRemoteVisitorData]: https://developers.kameleoon.com/feature-management-and-experimentation/web-sdks/js-sdk#getremotevisitordata
+
 ## 5.27.0 (2026-09-15)
 
 ### Features
