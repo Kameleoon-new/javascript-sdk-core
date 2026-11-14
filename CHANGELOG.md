@@ -1,5 +1,14 @@
 # Change Log
 
+## 5.28.1 (2026-11-14)
+
+### Patch Changes
+
+- Fixed the `UserAgent` value being sent in tracking requests without URL encoding.
+- Fixed real-time configuration streaming staying disabled after updating from a version earlier than 5.28.0: the configuration cached by those versions has `realTimeUpdate` instead of `configUpdateMode`, so the SDK kept polling until the data file was next modified.
+- Fixed an older configuration being applied over a newer one when two configuration fetches (for example triggered by two streaming events in quick succession) resolve out of order.
+- A configuration fetch which fails while the SDK is in streaming mode (for example, the fetch triggered by a streaming event hits a transient network error) is now retried after one minute.
+
 ## 5.28.0 (2026-10-14)
 
 ### Features
